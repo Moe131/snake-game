@@ -5,7 +5,7 @@
 #include <chrono>
 #include <thread>
 #include <vector>
-#include <cstdlib> 
+#include <cstdlib>
 
 using namespace std;
 
@@ -21,7 +21,9 @@ vector<SnakeSegment> snake; // Snake body
 int foodX, foodY;
 string movement = "UP";
 bool gameOver = false;
+int score = 0; // Track the player's score
 
+// Function to place food at a random location
 void placeFood() {
     bool validFoodPosition = false;
     while (!validFoodPosition) {
@@ -40,6 +42,7 @@ void placeFood() {
     }
 }
 
+// Non-blocking keyboard input function
 int kbhit() {
     struct termios oldt, newt;
     int ch;
@@ -65,9 +68,12 @@ int kbhit() {
     return 0;
 }
 
+// Function to draw the game board
 void board() {
-    cout << "\033[H"; // Move the cursor to the top-left corner
-    cout << endl;
+    cout << "\033[H\033[J"; // Clear the screen and move the cursor to the top-left corner
+    cout << "\t\t\tWelcome to Snake! Use W, A, S, D to move.\n";
+    cout << "\t\t\tScore: " << score << "\n\n";
+    
     for (int i = 0; i < HEIGHT; i++) {
         cout << "\t\t#";
         for (int j = 0; j < WIDTH; j++) {
@@ -93,10 +99,11 @@ void board() {
                     cout << " ";
             }
         }
-        cout << "#" << endl;
+        cout << "#\n";
     }
 }
 
+// Function to update the snake's position
 void updateSnake() {
     // Move the snake body
     SnakeSegment newHead = snake[0]; // The current head of the snake
@@ -124,6 +131,7 @@ void updateSnake() {
     // Check if the snake eats the food
     if (newHead.x == foodX && newHead.y == foodY) {
         placeFood(); // Place new food
+        score++;     // Increase the score
     } else {
         snake.pop_back(); // Remove the last segment (moving the snake)
     }
@@ -162,6 +170,9 @@ int main() {
         }
     }
 
-    cout << "\nGame Over! Your snake length was: " << snake.size() << endl;
+    // Game Over message with the final score
+    cout << "\nGame Over! Your final score was: " << score << ".\n";
+    cout << "Your snake length was: " << snake.size() << endl;
+
     return 0;
 }
